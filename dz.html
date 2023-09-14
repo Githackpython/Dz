@@ -1,13 +1,27 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<div class="mb-3">
-  <label for="exampleFormControlTextarea1" class="form-label">Многострочное поле ввода</label>
-  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-</div>
-</body>
-</html>
+#define WIFI_SSID "" 
+#define WIFI_PASS ""
+#define BLYNK_TEMPLATE_ID ""
+#define BLYNK_TEMPLATE_NAME ""
+#define BLYNK_AUTH_TOKEN ""
+#include <GyverHTU21D.h> //установить
+#include <BlynkSimpleEsp8266.h>
+GyverHTU21D htu;
+void updata(){
+    if (htu.readTick()) {
+      float temp=htu.getTemperature();
+      Blynk.virtualWrite(V0, temp);
+      float water=htu.getHumidity();
+      Blynk.virtualWrite(V1, water);
+      delay(5000);
+    }
+}
+
+void setup(){
+  Serial.begin(115200);
+  Blynk.begin(BLYNK_AUTH_TOKEN,WIFI_SSID,WIFI_PASS);
+  htu.begin();
+}
+void loop(){
+  Blynk.run();
+  updata();
+}
